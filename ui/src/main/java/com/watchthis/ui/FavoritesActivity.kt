@@ -31,6 +31,7 @@ class FavoritesActivity : AppCompatActivity() {
                     putExtra("movie_desc", movie.description)
                     putExtra("movie_year", movie.year)
                     putExtra("movie_rating", movie.rating)
+                    putExtra("movie_poster", movie.posterUrl)
                     putExtra("search_term", "")
                     putExtra("user_id", userId.toString())
                 })

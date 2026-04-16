@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.watchthis.data.db.entity.FavoriteEntity
 import com.watchthis.data.db.entity.MovieEntity
 import com.watchthis.data.db.entity.MovieWordEntity
@@ -28,7 +27,7 @@ import kotlinx.coroutines.launch
         FavoriteEntity::class,
         SavedWordEntity::class
     ],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 abstract class WatchThisDatabase : RoomDatabase() {
@@ -45,18 +44,14 @@ abstract class WatchThisDatabase : RoomDatabase() {
                     WatchThisDatabase::class.java,
                     "watchthis.db"
                 )
-                    .addCallback(object : Callback() {
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            INSTANCE?.let { database ->
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    DemoDataSeeder.seed(database.watchThisDao())
-                                }
-                            }
-                        }
-                    })
+                    .fallbackToDestructiveMigration()
                     .build()
-                    .also { INSTANCE = it }
+                    .also {
+                        INSTANCE = it
+                        CoroutineScope(Dispatchers.IO).launch {
+                            DemoDataSeeder.seed(it.watchThisDao())
+                        }
+                    }
             }
         }
     }

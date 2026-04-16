@@ -189,6 +189,7 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("movie_desc", movie.description)
         intent.putExtra("movie_year", movie.year)
         intent.putExtra("movie_rating", movie.rating)
+        intent.putExtra("movie_poster", movie.posterUrl)
         intent.putExtra("search_term", etSearch.text.toString())
         intent.putExtra("user_id", etUserId.text.toString())
         startActivity(intent)

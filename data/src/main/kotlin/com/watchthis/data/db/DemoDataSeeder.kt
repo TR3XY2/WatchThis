@@ -9,7 +9,7 @@ import com.watchthis.data.db.entity.WordEntity
 
 object DemoDataSeeder {
     suspend fun seed(dao: WatchThisDao) {
-        if (dao.usersCount() > 0) return
+        if (dao.moviesCount() > 0) return
 
         dao.insertUsers(
             listOf(
@@ -20,16 +20,16 @@ object DemoDataSeeder {
 
         dao.insertMovies(
             listOf(
-                MovieEntity(title = "Inception", description = "Dream infiltration mission", year = 2010, rating = 8.8f, posterUrl = null),
-                MovieEntity(title = "The Matrix", description = "Simulation and reality", year = 1999, rating = 8.7f, posterUrl = null),
-                MovieEntity(title = "Interstellar", description = "Space and time travel", year = 2014, rating = 8.6f, posterUrl = null),
-                MovieEntity(title = "The Dark Knight", description = "Gotham and Joker", year = 2008, rating = 9.0f, posterUrl = null),
-                MovieEntity(title = "Avatar", description = "Pandora and nature", year = 2009, rating = 7.8f, posterUrl = null),
-                MovieEntity(title = "Titanic", description = "Love story on a ship", year = 1997, rating = 7.9f, posterUrl = null),
-                MovieEntity(title = "Gladiator", description = "Roman empire revenge", year = 2000, rating = 8.5f, posterUrl = null),
-                MovieEntity(title = "Whiplash", description = "Music and discipline", year = 2014, rating = 8.5f, posterUrl = null),
-                MovieEntity(title = "Dune", description = "Desert planet and prophecy", year = 2021, rating = 8.0f, posterUrl = null),
-                MovieEntity(title = "Arrival", description = "Aliens and language learning", year = 2016, rating = 7.9f, posterUrl = null)
+                MovieEntity(title = "Inception", description = "Dream infiltration mission", year = 2010, rating = 8.8f, posterUrl = "https://m.media-amazon.com/images/I/71uKM+LdgFL.jpg"),
+                MovieEntity(title = "The Matrix", description = "Simulation and reality", year = 1999, rating = 8.7f, posterUrl = "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"),
+                MovieEntity(title = "Interstellar", description = "Space and time travel", year = 2014, rating = 8.6f, posterUrl = "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"),
+                MovieEntity(title = "The Dark Knight", description = "Gotham and Joker", year = 2008, rating = 9.0f, posterUrl = "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg"),
+                MovieEntity(title = "Avatar", description = "Pandora and nature", year = 2009, rating = 7.8f, posterUrl = "https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg"),
+                MovieEntity(title = "Titanic", description = "Love story on a ship", year = 1997, rating = 7.9f, posterUrl = "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg"),
+                MovieEntity(title = "Gladiator", description = "Roman empire revenge", year = 2000, rating = 8.5f, posterUrl = "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg"),
+                MovieEntity(title = "Whiplash", description = "Music and discipline", year = 2014, rating = 8.5f, posterUrl = "https://image.tmdb.org/t/p/w500/7fn624j5lj3xTme2SgiLCeuedmO.jpg"),
+                MovieEntity(title = "Dune", description = "Desert planet and prophecy", year = 2021, rating = 8.0f, posterUrl = "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"),
+                MovieEntity(title = "Arrival", description = "Aliens and language learning", year = 2016, rating = 7.9f, posterUrl = "https://image.tmdb.org/t/p/w500/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg")
             )
         )
 
@@ -51,6 +51,8 @@ object DemoDataSeeder {
         dao.insertPhrases(
             listOf(
                 PhraseEntity(movieId = 1, text = "We need to go deeper.", translation = "Нам треба піти глибше.", startTime = "00:21:00", endTime = "00:21:04"),
+                PhraseEntity(movieId = 1, text = "Why so serious?", translation = "Чому такий серйозний?", startTime = "00:13:00", endTime = "00:13:04"),
+                PhraseEntity(movieId = 1, text = "Are you not entertained?", translation = "Ви не розважені?", startTime = "00:43:00", endTime = "00:43:04"),
                 PhraseEntity(movieId = 2, text = "What is real?", translation = "Що таке реальність?", startTime = "00:35:10", endTime = "00:35:13"),
                 PhraseEntity(movieId = 3, text = "Love transcends dimensions.", translation = "Любов долає виміри.", startTime = "01:22:01", endTime = "01:22:06"),
                 PhraseEntity(movieId = 4, text = "Why so serious?", translation = "Чому такий серйозний?", startTime = "00:48:00", endTime = "00:48:03"),

@@ -3,8 +3,11 @@ package com.watchthis.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.watchthis.business.model.Movie
 
 class MovieAdapter(
@@ -40,11 +43,18 @@ class MovieAdapter(
     override fun getItemCount(): Int = items.size
 
     class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val poster: ImageView = itemView.findViewById(R.id.ivMoviePoster)
         private val title: TextView = itemView.findViewById(R.id.tvMovieTitle)
         private val meta: TextView = itemView.findViewById(R.id.tvMovieMeta)
         private val desc: TextView = itemView.findViewById(R.id.tvMovieDesc)
 
         fun bind(movie: Movie) {
+            Glide.with(itemView)
+                .load(movie.posterUrl)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                .placeholder(android.R.drawable.ic_menu_gallery)
+                .error(android.R.drawable.ic_menu_report_image)
+                .into(poster)
             title.text = movie.title
             meta.text = "${movie.year} | rating ${movie.rating}"
             desc.text = movie.description

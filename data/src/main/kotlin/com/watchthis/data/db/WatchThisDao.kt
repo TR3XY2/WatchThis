@@ -72,6 +72,9 @@ interface WatchThisDao {
     @Query("SELECT COUNT(*) FROM Users")
     suspend fun usersCount(): Int
 
+    @Query("SELECT COUNT(*) FROM Movies")
+    suspend fun moviesCount(): Int
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUsers(items: List<UserEntity>)
 

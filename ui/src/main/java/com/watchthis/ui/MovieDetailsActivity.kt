@@ -2,10 +2,12 @@ package com.watchthis.ui
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.android.material.appbar.MaterialToolbar
 import com.watchthis.business.WatchThisInteractor
 import kotlinx.coroutines.launch
@@ -27,11 +29,19 @@ class MovieDetailsActivity : AppCompatActivity() {
         val desc = intent.getStringExtra("movie_desc").orEmpty()
         val year = intent.getIntExtra("movie_year", 0)
         val rating = intent.getFloatExtra("movie_rating", 0f)
+        val posterUrl = intent.getStringExtra("movie_poster")
         val term = intent.getStringExtra("search_term")
         val userId = intent.getStringExtra("user_id").orEmpty()
 
+        val ivPoster = findViewById<ImageView>(R.id.ivPosterDetails)
         val tvDetails = findViewById<TextView>(R.id.tvDetails)
         val btnAddFavorite = findViewById<Button>(R.id.btnAddFavorite)
+
+        Glide.with(this)
+            .load(posterUrl)
+            .placeholder(android.R.drawable.ic_menu_gallery)
+            .error(android.R.drawable.ic_menu_report_image)
+            .into(ivPoster)
 
         lifecycleScope.launch {
             val phrases = interactor.loadPhrases(movieId, term)
