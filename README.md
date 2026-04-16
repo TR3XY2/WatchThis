@@ -14,13 +14,13 @@
 
 1. Розділення логіки на 3 рівні (`data`, `business`, `ui`)
 2. Графічний інтерфейс:
-	- головне меню (Toolbar options menu)
-	- контекстне меню (long press по фільму)
-	- панель інструментів (Toolbar + кнопки дій)
-	- валідація введення (`User ID`, `Search`, `Save word`)
+   - головне меню (Toolbar options menu)
+   - контекстне меню (long press по фільму)
+   - панель інструментів (Toolbar + кнопки дій)
+   - валідація введення (`User ID`, `Search`, `Save word`)
 3. Підключення до бази даних:
-	- для Android-емулятора використовується локальна БД Room
-	- схема PostgreSQL збережена у `database/schema.sql`
+   - для Android-емулятора використовується локальна БД Room
+   - схема PostgreSQL збережена у `database/schema.sql`
 
 ## Екрани
 
