@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.WatchThis" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/wt_primary</item>
+        <item name="colorPrimaryVariant">@color/wt_primary_dark</item>
+        <item name="colorSecondary">@color/wt_accent</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/wt_primary_dark</item>
+        <item name="android:windowBackground">@color/wt_bg</item>
+    </style>
+</resources>

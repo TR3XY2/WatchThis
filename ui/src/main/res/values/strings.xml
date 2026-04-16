@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WatchThis</string>
+    <string name="login_title">WatchThis Login</string>
+    <string name="continue_google">Continue with Google</string>
+    <string name="user_id">User ID</string>
+    <string name="search_hint">Search word or phrase</string>
+    <string name="save_word_hint">Word to save</string>
+    <string name="search">Search</string>
+    <string name="popular">Popular</string>
+    <string name="favorites">Favorites</string>
+    <string name="save_word">Save word</string>
+    <string name="details">Details</string>
+    <string name="show_phrases">Show phrases</string>
+    <string name="add_to_favorites">Add to favorites</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="language_ui">UI language</string>
+    <string name="language_learning">Learning language</string>
+</resources>
