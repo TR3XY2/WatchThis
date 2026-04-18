@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/wt_bg" android:orientation="vertical">
+    <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbarFlashcard" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/wt_primary" android:titleTextColor="@color/white" app:title="@string/flashcard_toolbar_title"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:orientation="vertical" android:padding="24dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/flashcard_label_original" android:textColor="@color/wt_text" android:textSize="16sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvFlashcardOriginal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@android:color/white" android:elevation="2dp" android:padding="16dp" android:textColor="@color/wt_text" android:textSize="22sp"/>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="@string/flashcard_label_translation" android:textColor="@color/wt_text" android:textSize="16sp" android:textStyle="bold"/>
+        <TextView android:id="@+id/tvFlashcardTranslation" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@android:color/white" android:elevation="2dp" android:padding="16dp" android:textColor="#3E4A57" android:textSize="22sp"/>
+        <ImageButton android:id="@+id/btnSpeak" android:layout_width="72dp" android:layout_height="72dp" android:layout_marginTop="32dp" android:background="@drawable/bg_speak_button" android:contentDescription="@string/flashcard_speak_cd" android:padding="16dp" android:src="@android:drawable/ic_lock_silent_mode_off"/>
+    </LinearLayout>
+    <Button android:id="@+id/btnNextWord" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" android:layout_marginBottom="8dp" android:text="@string/flashcard_next"/>
+    <Button android:id="@+id/btnRandomWord" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="16dp" android:layout_marginBottom="16dp" android:text="@string/flashcard_random"/>
+    <include layout="@layout/include_app_bottom_nav"/>
+</LinearLayout>

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/context_show_phrases"
-        android:title="Show phrases" />
+        android:title="@string/show_phrases" />
     <item
         android:id="@+id/context_add_favorite"
-        android:title="Add to favorites" />
+        android:title="@string/add_to_favorites" />
 </menu>

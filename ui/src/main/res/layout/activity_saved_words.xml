@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/wt_bg"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarSavedWords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/wt_primary"
+        android:title="@string/toolbar_saved_words"
+        android:titleTextColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/saved_words_add_hint"
+            android:textColor="@color/wt_text"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/etSavedWordUk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/save_word_hint_uk"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etSavedWordEn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:hint="@string/save_word_hint_en"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnSaveWordPair"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/save_word" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvSavedWordsEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:text="@string/saved_words_empty"
+        android:textColor="@color/wt_text"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSavedWords"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
+
+    <include layout="@layout/include_app_bottom_nav" />
+
+</LinearLayout>

@@ -5,11 +5,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.watchthis.business.WatchThisInteractor
+import com.watchthis.business.model.Phrase
 import kotlinx.coroutines.launch
 
 class MovieDetailsActivity : AppCompatActivity() {
@@ -23,6 +28,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener { finish() }
+        toolbar.title = getString(R.string.toolbar_movie_details)
 
         val movieId = intent.getIntExtra("movie_id", -1)
         val title = intent.getStringExtra("movie_title").orEmpty()
@@ -31,11 +37,16 @@ class MovieDetailsActivity : AppCompatActivity() {
         val rating = intent.getFloatExtra("movie_rating", 0f)
         val posterUrl = intent.getStringExtra("movie_poster")
         val term = intent.getStringExtra("search_term")
-        val userId = intent.getStringExtra("user_id").orEmpty()
+        val userId = intent.getStringExtra("user_id").orEmpty().ifBlank { "1" }
 
         val ivPoster = findViewById<ImageView>(R.id.ivPosterDetails)
         val tvDetails = findViewById<TextView>(R.id.tvDetails)
         val btnAddFavorite = findViewById<Button>(R.id.btnAddFavorite)
+        val rvPhrases = findViewById<RecyclerView>(R.id.rvPhrases)
+
+        val phraseAdapter = PhraseAdapter { phrase -> confirmSavePhrase(phrase, userId) }
+        rvPhrases.layoutManager = LinearLayoutManager(this)
+        rvPhrases.adapter = phraseAdapter
 
         Glide.with(this)
             .load(posterUrl)
@@ -45,41 +56,66 @@ class MovieDetailsActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val phrases = interactor.loadPhrases(movieId, term)
-            val phrasesBlock = if (phrases.isEmpty()) {
-                "No phrases found"
-            } else {
-                phrases.joinToString("\n\n") {
-                    "• ${it.text}\n  ${it.translation}\n  ${it.startTime} - ${it.endTime}"
-                }
-            }
 
             tvDetails.text = """
-                Title: $title
-                Year: $year
-                Rating: $rating
+                ${getString(R.string.movie_details_title, title)}
+                ${getString(R.string.movie_details_year, year)}
+                ${getString(R.string.movie_details_rating, rating)}
 
-                Description:
+                ${getString(R.string.movie_details_description_label)}
                 $desc
-
-                Phrases:
-                $phrasesBlock
             """.trimIndent()
+
+            if (phrases.isEmpty()) {
+                findViewById<TextView>(R.id.tvPhrasesLabel).text =
+                    getString(R.string.movie_details_phrases_label) + "\n" + getString(R.string.no_phrases_found)
+            } else {
+                phraseAdapter.submitList(phrases)
+            }
         }
+
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        AppBottomNav.setup(this, bottomNav, AppBottomNavTab.HOME) { userId }
 
         btnAddFavorite.setOnClickListener {
             val validation = interactor.validateUserId(userId)
             if (!validation.isValid) {
-                Toast.makeText(this, validation.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    validation.error?.toMessage(this).orEmpty(),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
             lifecycleScope.launch {
                 val inserted = interactor.addFavorite(userId, movieId)
                 Toast.makeText(
                     this@MovieDetailsActivity,
-                    if (inserted) "Added to favorites" else "Already in favorites",
+                    if (inserted) getString(R.string.movie_added_favorite) else getString(R.string.movie_already_favorite),
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
+    }
+
+    private fun confirmSavePhrase(phrase: Phrase, userId: String) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.phrase_save_dialog_title))
+            .setMessage(
+                getString(R.string.phrase_save_dialog_message, phrase.text, phrase.translation)
+            )
+            .setPositiveButton(getString(R.string.phrase_save_dialog_yes)) { _, _ ->
+                lifecycleScope.launch {
+                    val saved = interactor.saveWordPair(userId, phrase.translation, phrase.text)
+                    Toast.makeText(
+                        this@MovieDetailsActivity,
+                        if (saved) getString(R.string.phrase_save_success)
+                        else getString(R.string.phrase_save_already),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.phrase_save_dialog_no), null)
+            .show()
     }
 }

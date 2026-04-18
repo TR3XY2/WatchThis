@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
         FavoriteEntity::class,
         SavedWordEntity::class
     ],
-    version = 3,
+    version = 5,
     exportSchema = false
 )
 abstract class WatchThisDatabase : RoomDatabase() {

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.chip.ChipGroup
 import com.watchthis.business.WatchThisInteractor
 import com.watchthis.business.model.Movie
 import kotlinx.coroutines.launch
@@ -24,11 +25,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var etUserId: EditText
     private lateinit var etSearch: EditText
-    private lateinit var etWord: EditText
     private lateinit var tvStatus: TextView
+    private lateinit var bottomNav: BottomNavigationView
     private lateinit var adapter: MovieAdapter
+    private lateinit var chipGroupSort: ChipGroup
 
     private var currentMovies: List<Movie> = emptyList()
+
+    private enum class SortOrder { RATING, YEAR, TITLE }
+    private var currentSort = SortOrder.RATING
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         etUserId = findViewById(R.id.etUserId)
         etSearch = findViewById(R.id.etSearch)
-        etWord = findViewById(R.id.etWord)
         tvStatus = findViewById(R.id.tvStatus)
 
         etUserId.setText("1")
@@ -60,49 +64,53 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSearch).setOnClickListener { searchMovies() }
         findViewById<Button>(R.id.btnPopular).setOnClickListener { loadPopular() }
-        findViewById<Button>(R.id.btnFavorites).setOnClickListener { openFavoritesScreen() }
-        findViewById<Button>(R.id.btnSaveWord).setOnClickListener { saveWord() }
 
-        findViewById<BottomNavigationView>(R.id.bottomNavigation).setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_home -> {
-                    true
-                }
-                R.id.nav_favorites -> {
-                    openFavoritesScreen()
-                    true
-                }
-                R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    true
-                }
-                else -> false
+        chipGroupSort = findViewById(R.id.chipGroupSort)
+        chipGroupSort.setOnCheckedStateChangeListener { _, _ ->
+            val checkedId = chipGroupSort.checkedChipId
+            currentSort = when (checkedId) {
+                R.id.chipSortYear -> SortOrder.YEAR
+                R.id.chipSortTitle -> SortOrder.TITLE
+                else -> SortOrder.RATING
             }
+            applySortAndSubmit()
         }
 
+        bottomNav = findViewById(R.id.bottomNavigation)
+        AppBottomNav.setup(this, bottomNav, AppBottomNavTab.HOME) { etUserId.text.toString() }
+
         loadPopular()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNav.selectedItemId = R.id.nav_home
     }
 
     private fun handleTopMenu(item: MenuItem) {
         when (item.itemId) {
             R.id.menu_popular -> loadPopular()
             R.id.menu_favorites -> openFavoritesScreen()
-            R.id.menu_profile -> startActivity(Intent(this, ProfileActivity::class.java))
+            R.id.menu_profile -> startActivity(
+                Intent(this, ProfileActivity::class.java).apply {
+                    putExtra("user_id", etUserId.text.toString())
+                }
+            )
         }
     }
 
     private fun searchMovies() {
         val validation = interactor.validateSearchTerm(etSearch.text.toString())
         if (!validation.isValid) {
-            etSearch.error = validation.message
+            etSearch.error = validation.error?.toMessage(this)
             return
         }
 
         lifecycleScope.launch {
             val movies = interactor.searchMovies(etSearch.text.toString())
             currentMovies = movies
-            adapter.submitList(movies)
-            updateStatus("Знайдено ${movies.size} фільмів")
+            applySortAndSubmit()
+            updateStatus(getString(R.string.found_movies, movies.size))
         }
     }
 
@@ -110,42 +118,33 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val movies = interactor.loadPopularMovies()
             currentMovies = movies
-            adapter.submitList(movies)
-            updateStatus("Популярні: ${movies.size}")
+            applySortAndSubmit()
+            updateStatus(getString(R.string.popular_status, movies.size))
         }
     }
 
-    private fun openFavoritesScreen() {
+    private fun applySortAndSubmit() {
+        val sorted = when (currentSort) {
+            SortOrder.RATING -> currentMovies.sortedByDescending { it.rating }
+            SortOrder.YEAR -> currentMovies.sortedByDescending { it.year }
+            SortOrder.TITLE -> currentMovies.sortedBy { it.title.lowercase() }
+        }
+        adapter.submitList(sorted)
+    }
+
+    /** @return true if Favorites screen was opened */
+    private fun openFavoritesScreen(): Boolean {
         val validation = interactor.validateUserId(etUserId.text.toString())
         if (!validation.isValid) {
-            etUserId.error = validation.message
-            return
+            etUserId.error = validation.error?.toMessage(this)
+            return false
         }
-
-        val intent = Intent(this, FavoritesActivity::class.java)
-        intent.putExtra("user_id", etUserId.text.toString().trim().toInt())
-        startActivity(intent)
-    }
-
-    private fun saveWord() {
-        val userValidation = interactor.validateUserId(etUserId.text.toString())
-        if (!userValidation.isValid) {
-            etUserId.error = userValidation.message
-            return
-        }
-
-        val wordValidation = interactor.validateSearchTerm(etWord.text.toString())
-        if (!wordValidation.isValid) {
-            etWord.error = wordValidation.message
-            return
-        }
-
-        lifecycleScope.launch {
-            val inserted = interactor.saveWord(etUserId.text.toString(), etWord.text.toString())
-            val msg = if (inserted) "Слово збережено" else "Слово вже існує"
-            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
-            updateStatus(msg)
-        }
+        startActivity(
+            Intent(this, FavoritesActivity::class.java).apply {
+                putExtra("user_id", etUserId.text.toString().trim().toInt())
+            }
+        )
+        return true
     }
 
     private fun showContextMenu(anchor: View, movie: Movie) {
@@ -170,13 +169,13 @@ class MainActivity : AppCompatActivity() {
     private fun addFavorite(movie: Movie) {
         val validation = interactor.validateUserId(etUserId.text.toString())
         if (!validation.isValid) {
-            etUserId.error = validation.message
+            etUserId.error = validation.error?.toMessage(this)
             return
         }
 
         lifecycleScope.launch {
             val inserted = interactor.addFavorite(etUserId.text.toString(), movie.id)
-            val msg = if (inserted) "Додано у вибране" else "Вже у вибраному"
+            val msg = if (inserted) getString(R.string.added_favorite) else getString(R.string.already_favorite)
             Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
             updateStatus(msg)
         }

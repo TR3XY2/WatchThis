@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_popular"
-        android:title="Popular" />
+        android:title="@string/popular" />
     <item
         android:id="@+id/menu_favorites"
-        android:title="Favorites" />
+        android:title="@string/favorites" />
     <item
         android:id="@+id/menu_profile"
-        android:title="Profile" />
+        android:title="@string/profile" />
 </menu>

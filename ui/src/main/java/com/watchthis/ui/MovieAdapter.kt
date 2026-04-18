@@ -3,6 +3,7 @@ package com.watchthis.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,8 @@ import com.watchthis.business.model.Movie
 
 class MovieAdapter(
     private val onClick: (Movie) -> Unit,
-    private val onLongClick: (View, Movie) -> Unit
+    private val onLongClick: (View, Movie) -> Unit,
+    private val onRemoveFavorite: ((Movie) -> Unit)? = null
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     private val items = mutableListOf<Movie>()
@@ -32,7 +34,7 @@ class MovieAdapter(
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = items[position]
-        holder.bind(movie)
+        holder.bind(movie, onRemoveFavorite)
         holder.itemView.setOnClickListener { onClick(movie) }
         holder.itemView.setOnLongClickListener {
             onLongClick(holder.itemView, movie)
@@ -47,8 +49,9 @@ class MovieAdapter(
         private val title: TextView = itemView.findViewById(R.id.tvMovieTitle)
         private val meta: TextView = itemView.findViewById(R.id.tvMovieMeta)
         private val desc: TextView = itemView.findViewById(R.id.tvMovieDesc)
+        private val btnRemove: ImageButton = itemView.findViewById(R.id.btnRemoveFavorite)
 
-        fun bind(movie: Movie) {
+        fun bind(movie: Movie, onRemoveFavorite: ((Movie) -> Unit)?) {
             Glide.with(itemView)
                 .load(movie.posterUrl)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
@@ -56,8 +59,15 @@ class MovieAdapter(
                 .error(android.R.drawable.ic_menu_report_image)
                 .into(poster)
             title.text = movie.title
-            meta.text = "${movie.year} | rating ${movie.rating}"
+            meta.text = itemView.context.getString(R.string.movie_row_meta, movie.year, movie.rating)
             desc.text = movie.description
+            if (onRemoveFavorite != null) {
+                btnRemove.visibility = View.VISIBLE
+                btnRemove.setOnClickListener { onRemoveFavorite(movie) }
+            } else {
+                btnRemove.visibility = View.GONE
+                btnRemove.setOnClickListener(null)
+            }
         }
     }
 }

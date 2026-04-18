@@ -4,25 +4,21 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     android:background="@android:color/white"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="10dp">
-
-    <ImageView
-        android:id="@+id/ivMoviePoster"
-        android:layout_width="72dp"
-        android:layout_height="108dp"
-        android:contentDescription="@string/movie_poster_cd"
-        android:scaleType="centerCrop" />
+    android:paddingStart="14dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="6dp"
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tvMovieTitle"
+            android:id="@+id/tvWordEn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/wt_text"
@@ -30,33 +26,21 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvMovieMeta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="#516172"
-            android:textSize="13sp" />
-
-        <TextView
-            android:id="@+id/tvMovieDesc"
+            android:id="@+id/tvWordUk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:maxLines="3"
             android:textColor="#3E4A57"
-            android:textSize="13sp" />
-
+            android:textSize="15sp" />
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/btnRemoveFavorite"
+        android:id="@+id/btnDeleteSavedWord"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/remove_from_favorites_cd"
+        android:contentDescription="@string/delete_saved_word_cd"
         android:padding="8dp"
-        android:src="@android:drawable/ic_menu_delete"
-        android:visibility="gone" />
+        android:src="@android:drawable/ic_menu_delete" />
 
 </LinearLayout>

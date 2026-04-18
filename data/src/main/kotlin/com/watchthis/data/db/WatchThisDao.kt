@@ -10,6 +10,7 @@ import com.watchthis.data.db.entity.MovieWordEntity
 import com.watchthis.data.db.entity.PhraseEntity
 import com.watchthis.data.db.entity.PhraseWordEntity
 import com.watchthis.data.db.entity.SavedWordEntity
+import com.watchthis.data.db.entity.SavedWordPairProjection
 import com.watchthis.data.db.entity.UserEntity
 import com.watchthis.data.db.entity.WordEntity
 
@@ -60,6 +61,9 @@ interface WatchThisDao {
     )
     suspend fun getFavorites(userId: Int): List<MovieEntity>
 
+    @Query("DELETE FROM Favorites WHERE user_id = :userId AND movie_id = :movieId")
+    suspend fun deleteFavorite(userId: Int, movieId: Int): Int
+
     @Query("SELECT id FROM Words WHERE lower(word) = lower(:word) LIMIT 1")
     suspend fun getWordId(word: String): Int?
 
@@ -68,6 +72,23 @@ interface WatchThisDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSavedWord(savedWordEntity: SavedWordEntity): Long
+
+    @Query(
+        """
+        SELECT word_en, word_uk FROM SavedWords
+        WHERE user_id = :userId
+        ORDER BY word_en COLLATE NOCASE ASC
+        """
+    )
+    suspend fun getSavedWordPairs(userId: Int): List<SavedWordPairProjection>
+
+    @Query(
+        """
+        DELETE FROM SavedWords
+        WHERE user_id = :userId AND word_en = :wordEn AND word_uk = :wordUk
+        """
+    )
+    suspend fun deleteSavedWord(userId: Int, wordEn: String, wordUk: String): Int
 
     @Query("SELECT COUNT(*) FROM Users")
     suspend fun usersCount(): Int

@@ -9,17 +9,16 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "SavedWords",
     foreignKeys = [
-        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = WordEntity::class, parentColumns = ["id"], childColumns = ["word_id"], onDelete = ForeignKey.CASCADE)
+        ForeignKey(entity = UserEntity::class, parentColumns = ["id"], childColumns = ["user_id"], onDelete = ForeignKey.CASCADE)
     ],
     indices = [
         Index(value = ["user_id"]),
-        Index(value = ["word_id"]),
-        Index(value = ["user_id", "word_id"], unique = true)
+        Index(value = ["user_id", "word_en", "word_uk"], unique = true)
     ]
 )
 data class SavedWordEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "user_id") val userId: Int,
-    @ColumnInfo(name = "word_id") val wordId: Int
+    @ColumnInfo(name = "word_en") val wordEn: String,
+    @ColumnInfo(name = "word_uk") val wordUk: String
 )

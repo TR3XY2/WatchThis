@@ -3,10 +3,10 @@ package com.watchthis.data
 import com.watchthis.business.WatchThisRepository
 import com.watchthis.business.model.Movie
 import com.watchthis.business.model.Phrase
+import com.watchthis.business.model.SavedWordPair
 import com.watchthis.data.db.WatchThisDao
 import com.watchthis.data.db.entity.FavoriteEntity
 import com.watchthis.data.db.entity.SavedWordEntity
-import com.watchthis.data.db.entity.WordEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -34,14 +34,22 @@ class WatchThisRepositoryImpl(
         dao.getFavorites(userId).map { it.toDomain() }
     }
 
-    override suspend fun saveWord(userId: Int, word: String): Boolean = withContext(Dispatchers.IO) {
-        val existingWordId = dao.getWordId(word)
-        val wordId = if (existingWordId == null) {
-            dao.insertWord(WordEntity(word = word)).toInt().takeIf { it > 0 } ?: dao.getWordId(word)
-        } else {
-            existingWordId
-        } ?: return@withContext false
-
-        dao.insertSavedWord(SavedWordEntity(userId = userId, wordId = wordId)) != -1L
+    override suspend fun removeFavorite(userId: Int, movieId: Int): Boolean = withContext(Dispatchers.IO) {
+        dao.deleteFavorite(userId, movieId) > 0
     }
+
+    override suspend fun saveWordPair(userId: Int, wordUk: String, wordEn: String): Boolean = withContext(Dispatchers.IO) {
+        dao.insertSavedWord(
+            SavedWordEntity(userId = userId, wordEn = wordEn, wordUk = wordUk)
+        ) != -1L
+    }
+
+    override suspend fun getSavedWords(userId: Int): List<SavedWordPair> = withContext(Dispatchers.IO) {
+        dao.getSavedWordPairs(userId).map { it.toSavedWordPair() }
+    }
+
+    override suspend fun deleteSavedWordPair(userId: Int, wordUk: String, wordEn: String): Boolean =
+        withContext(Dispatchers.IO) {
+            dao.deleteSavedWord(userId, wordEn, wordUk) > 0
+        }
 }
