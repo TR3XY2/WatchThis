@@ -1,6 +1,13 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
 }
 
 android {
@@ -13,7 +20,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        resValue("string", "google_client_id", "432279473048-n2n67adutdo9lgod37bcisvcc8mn78g0.apps.googleusercontent.com")
+        resValue(
+            "string",
+            "google_client_id",
+            localProps.getProperty("google_client_id", "")
+        )
     }
 
     buildTypes {
