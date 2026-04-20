@@ -29,7 +29,7 @@ class SavedWordsActivity : AppCompatActivity() {
     private lateinit var adapter: SavedWordAdapter
     private lateinit var bottomNav: BottomNavigationView
 
-    private val userId: String by lazy { intent.getIntExtra("user_id", 1).toString() }
+    private val userId: String by lazy { UserManager.getCurrentUserIdString() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

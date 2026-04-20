@@ -3,8 +3,7 @@
     <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@color/wt_primary" android:title="@string/app_name" android:titleTextColor="@color/white" app:menu="@menu/main_options_menu"/>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
-            <EditText android:id="@+id/etUserId" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="@string/user_id" android:inputType="number"/>
-            <EditText android:id="@+id/etSearch" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_weight="2" android:hint="@string/search_hint" android:inputType="text"/>
+            <EditText android:id="@+id/etSearch" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/search_hint" android:inputType="text"/>
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:orientation="horizontal">
             <Button android:id="@+id/btnSearch" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/search"/>

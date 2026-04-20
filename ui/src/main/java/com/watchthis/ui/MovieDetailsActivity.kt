@@ -37,7 +37,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         val rating = intent.getFloatExtra("movie_rating", 0f)
         val posterUrl = intent.getStringExtra("movie_poster")
         val term = intent.getStringExtra("search_term")
-        val userId = intent.getStringExtra("user_id").orEmpty().ifBlank { "1" }
+        val userId = UserManager.getCurrentUserIdString()
 
         val ivPoster = findViewById<ImageView>(R.id.ivPosterDetails)
         val tvDetails = findViewById<TextView>(R.id.tvDetails)

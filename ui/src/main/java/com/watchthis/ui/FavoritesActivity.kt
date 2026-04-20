@@ -19,7 +19,7 @@ class FavoritesActivity : AppCompatActivity() {
     private lateinit var adapter: MovieAdapter
     private lateinit var bottomNav: BottomNavigationView
 
-    private val userId: Int by lazy { intent.getIntExtra("user_id", 1) }
+    private val userId: Int by lazy { UserManager.getCurrentUserId() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

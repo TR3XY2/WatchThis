@@ -7,8 +7,11 @@ import com.watchthis.business.model.SavedWordPair
 import com.watchthis.data.db.WatchThisDao
 import com.watchthis.data.db.entity.FavoriteEntity
 import com.watchthis.data.db.entity.SavedWordEntity
+import com.watchthis.data.db.entity.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class WatchThisRepositoryImpl(
     private val dao: WatchThisDao
@@ -52,4 +55,27 @@ class WatchThisRepositoryImpl(
         withContext(Dispatchers.IO) {
             dao.deleteSavedWord(userId, wordEn, wordUk) > 0
         }
+
+    override suspend fun getOrCreateUserByGoogleId(
+        googleId: String,
+        email: String?,
+        name: String?
+    ): Int = withContext(Dispatchers.IO) {
+        // Try to get existing user
+        val existingUserId = dao.getUserIdByGoogleId(googleId)
+        if (existingUserId != null) {
+            return@withContext existingUserId
+        }
+
+        // Create new user
+        val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+        val newUser = UserEntity(
+            email = email ?: "unknown@watchthis.local",
+            name = name ?: "Google User",
+            googleId = googleId,
+            createdAt = now
+        )
+        val insertedId = dao.insertUser(newUser)
+        return@withContext insertedId.toInt()
+    }
 }

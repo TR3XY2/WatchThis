@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private val interactor: WatchThisInteractor by lazy { ServiceLocator.provideInteractor(applicationContext) }
 
-    private lateinit var etUserId: EditText
     private lateinit var etSearch: EditText
     private lateinit var tvStatus: TextView
     private lateinit var bottomNav: BottomNavigationView
@@ -46,11 +45,8 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        etUserId = findViewById(R.id.etUserId)
         etSearch = findViewById(R.id.etSearch)
         tvStatus = findViewById(R.id.tvStatus)
-
-        etUserId.setText("1")
 
         adapter = MovieAdapter(
             onClick = { openMovieDetails(it) },
@@ -77,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomNav = findViewById(R.id.bottomNavigation)
-        AppBottomNav.setup(this, bottomNav, AppBottomNavTab.HOME) { etUserId.text.toString() }
+        AppBottomNav.setup(this, bottomNav, AppBottomNavTab.HOME) { UserManager.getCurrentUserIdString() }
 
         loadPopular()
     }
@@ -92,9 +88,7 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_popular -> loadPopular()
             R.id.menu_favorites -> openFavoritesScreen()
             R.id.menu_profile -> startActivity(
-                Intent(this, ProfileActivity::class.java).apply {
-                    putExtra("user_id", etUserId.text.toString())
-                }
+                Intent(this, ProfileActivity::class.java)
             )
         }
     }
@@ -134,14 +128,14 @@ class MainActivity : AppCompatActivity() {
 
     /** @return true if Favorites screen was opened */
     private fun openFavoritesScreen(): Boolean {
-        val validation = interactor.validateUserId(etUserId.text.toString())
-        if (!validation.isValid) {
-            etUserId.error = validation.error?.toMessage(this)
+        val userId = UserManager.getCurrentUserId()
+        if (userId <= 0) {
+            Toast.makeText(this, R.string.err_blank_user_id, Toast.LENGTH_SHORT).show()
             return false
         }
         startActivity(
             Intent(this, FavoritesActivity::class.java).apply {
-                putExtra("user_id", etUserId.text.toString().trim().toInt())
+                putExtra("user_id", userId)
             }
         )
         return true
@@ -167,14 +161,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addFavorite(movie: Movie) {
-        val validation = interactor.validateUserId(etUserId.text.toString())
-        if (!validation.isValid) {
-            etUserId.error = validation.error?.toMessage(this)
+        val userId = UserManager.getCurrentUserIdString()
+        if (userId.toIntOrNull() == null || userId.toInt() <= 0) {
+            Toast.makeText(this, R.string.err_blank_user_id, Toast.LENGTH_SHORT).show()
             return
         }
 
         lifecycleScope.launch {
-            val inserted = interactor.addFavorite(etUserId.text.toString(), movie.id)
+            val inserted = interactor.addFavorite(userId, movie.id)
             val msg = if (inserted) getString(R.string.added_favorite) else getString(R.string.already_favorite)
             Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
             updateStatus(msg)
@@ -190,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("movie_rating", movie.rating)
         intent.putExtra("movie_poster", movie.posterUrl)
         intent.putExtra("search_term", etSearch.text.toString())
-        intent.putExtra("user_id", etUserId.text.toString())
+        intent.putExtra("user_id", UserManager.getCurrentUserIdString())
         startActivity(intent)
     }
 

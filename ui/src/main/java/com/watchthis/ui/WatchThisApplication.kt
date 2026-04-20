@@ -6,5 +6,6 @@ class WatchThisApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         LocaleHelper.applySavedLocale(this)
+        UserManager.init(this)
     }
 }

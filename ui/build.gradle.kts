@@ -13,6 +13,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        resValue("string", "google_client_id", "432279473048-n2n67adutdo9lgod37bcisvcc8mn78g0.apps.googleusercontent.com")
     }
 
     buildTypes {
@@ -47,4 +48,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }

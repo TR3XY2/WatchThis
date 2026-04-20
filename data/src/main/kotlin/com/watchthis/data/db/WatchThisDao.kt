@@ -113,4 +113,13 @@ interface WatchThisDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPhraseWords(items: List<PhraseWordEntity>)
+
+    @Query("SELECT id FROM Users WHERE google_id = :googleId LIMIT 1")
+    suspend fun getUserIdByGoogleId(googleId: String): Int?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUser(user: UserEntity): Long
+
+    @Query("SELECT * FROM Users WHERE google_id = :googleId LIMIT 1")
+    suspend fun getUserByGoogleId(googleId: String): UserEntity?
 }
